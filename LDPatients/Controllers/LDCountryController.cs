@@ -131,32 +131,34 @@ namespace LDPatients.Controllers
         // GET: LDCountry/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            // Check if the id exists in the Country database. If not, return not found. 
             if (id == null)
             {
                 return NotFound();
             }
-
-            var country = await _context.Country
-                .FirstOrDefaultAsync(m => m.CountryCode == id);
+            // Assign a variable from context 
+            var country = await _context.Country.FirstOrDefaultAsync(m => m.CountryCode == id);
             if (country == null)
             {
-                return NotFound();
+                return NotFound(); //If it is null, return not found
             }
-
+            // If it is true, return country view
             return View(country);
         }
 
         // POST: LDCountry/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id) //Post delete method passing a string id as a parameter
         {
+            // Find the id and remove it from the context and database, then save. Return to index
             var country = await _context.Country.FindAsync(id);
             _context.Country.Remove(country);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // Private method to check if the id exists
         private bool CountryExists(string id)
         {
             return _context.Country.Any(e => e.CountryCode == id);
